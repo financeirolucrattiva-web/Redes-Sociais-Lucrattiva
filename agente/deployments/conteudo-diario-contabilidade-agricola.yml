@@ -1,10 +1,8 @@
 name: Conteúdo diário - contabilidade agrícola
 agent: ../agents/agente-de-redes-sociais-contabilidade-agricola.md
 environment_id: ../environments/agente-redes-sociais-agro-env.yml
-# Substitua pelo ID do vault criado com `ant beta:vaults create` que contém a
-# credencial do servidor MCP do Gmail/Zapier (veja INSTRUCOES-EMAIL.md).
-vault_ids:
-  - SUBSTITUA_PELO_SEU_VAULT_ID
+# vault_ids do e-mail (Gmail/Zapier) entra aqui depois que o vault existir —
+# veja INSTRUCOES-EMAIL.md. Sem isso, o agente ainda não consegue enviar.
 initial_events:
   - type: user.message
     content:
