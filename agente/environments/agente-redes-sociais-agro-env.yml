@@ -1,0 +1,14 @@
+name: agente-redes-sociais-agro-env
+metadata: {}
+scope: organization
+config:
+  type: cloud
+  packages:
+    pip: []
+    npm: []
+    apt: []
+    cargo: []
+    gem: []
+    go: []
+  networking:
+    type: unrestricted

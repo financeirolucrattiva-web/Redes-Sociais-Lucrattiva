@@ -1,0 +1,21 @@
+name: Conteúdo diário - contabilidade agrícola
+agent: ../agents/agente-de-redes-sociais-contabilidade-agricola.md
+environment_id: ../environments/agente-redes-sociais-agro-env.yml
+# Substitua pelo ID do vault criado com `ant beta:vaults create` que contém a
+# credencial do servidor MCP do Gmail/Zapier (veja INSTRUCOES-EMAIL.md).
+vault_ids:
+  - SUBSTITUA_PELO_SEU_VAULT_ID
+initial_events:
+  - type: user.message
+    content:
+      - type: text
+        text: Entregue o conteúdo completo (imagem/carrossel, legenda e horário) para postar hoje.
+schedule:
+  type: cron
+  expression: 0 7 * * *
+  timezone: America/Sao_Paulo
+budget:
+  type: limit
+  max_list_cost:
+    currency: USD
+    amount: "500"
