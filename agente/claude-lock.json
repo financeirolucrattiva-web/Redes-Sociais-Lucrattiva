@@ -9,15 +9,15 @@
     "./agents/agente-de-redes-sociais-contabilidade-agricola.md": {
       "kind": "agent",
       "id": "agent_0145jWZh1qiPLTJBHKjUubfQ",
-      "version": "4",
-      "hash": "f257034fbb6080500d345e69915ba7d5",
-      "remote_hash": "692dfba2ea7791e6817b94748d6de63f"
+      "version": "7",
+      "hash": "41f970ce7e16460c7ba0bff8d41cf10b",
+      "remote_hash": "be0577d051e7e3a5665c1b93944121c6"
     },
     "./deployments/conteudo-diario-contabilidade-agricola.yml": {
       "kind": "deployment",
       "id": "depl_01K2KYhuTePHGW1X68hwJFtK",
-      "hash": "b2e7f5c84e075169e48c95dbc42124b1",
-      "remote_hash": "b2e7f5c84e075169e48c95dbc42124b1"
+      "hash": "ae7de2bafb6dbd73dc93edbb784d08ab",
+      "remote_hash": "ae7de2bafb6dbd73dc93edbb784d08ab"
     },
     "./environments/agente-redes-sociais-agro-env.yml": {
       "kind": "environment",
