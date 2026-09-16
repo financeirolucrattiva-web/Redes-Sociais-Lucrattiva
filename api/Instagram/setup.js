@@ -14,14 +14,15 @@ module.exports = async (req, res) => {
   }
 
   try {
+    let longToken = shortToken;
     const exchangeUrl = `${GRAPH}/oauth/access_token?grant_type=fb_exchange_token&client_id=${APP_ID}&client_secret=${APP_SECRET}&fb_exchange_token=${encodeURIComponent(shortToken)}`;
     const exchangeRes = await fetch(exchangeUrl);
     const exchangeData = await exchangeRes.json();
-    if (!exchangeData.access_token) {
-      res.status(500).json({ error: "falha ao trocar token", details: exchangeData });
-      return;
+    if (exchangeData.access_token) {
+      longToken = exchangeData.access_token;
     }
-    const longToken = exchangeData.access_token;
+    // se a troca falhar (ex: token de usuário de sistema, que já não expira),
+    // segue usando o token original direto
 
     const accountsRes = await fetch(`${GRAPH}/me/accounts?access_token=${encodeURIComponent(longToken)}`);
     const accountsData = await accountsRes.json();
