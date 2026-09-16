@@ -14,6 +14,10 @@ module.exports = async (req, res) => {
   }
 
   try {
+    const debugRes = await fetch(`${GRAPH}/debug_token?input_token=${encodeURIComponent(shortToken)}&access_token=${APP_ID}|${APP_SECRET}`);
+    const debugData = await debugRes.json();
+    const grantedScopes = debugData?.data?.scopes || debugData;
+
     let longToken = shortToken;
     const exchangeUrl = `${GRAPH}/oauth/access_token?grant_type=fb_exchange_token&client_id=${APP_ID}&client_secret=${APP_SECRET}&fb_exchange_token=${encodeURIComponent(shortToken)}`;
     const exchangeRes = await fetch(exchangeUrl);
@@ -71,7 +75,7 @@ module.exports = async (req, res) => {
       businessInstagramAccounts = [{ error: String(e) }];
     }
 
-    res.status(200).json({ pages: results, business_instagram_accounts: businessInstagramAccounts });
+    res.status(200).json({ granted_scopes: grantedScopes, pages: results, business_instagram_accounts: businessInstagramAccounts });
   } catch (err) {
     res.status(500).json({ error: String(err) });
   }
