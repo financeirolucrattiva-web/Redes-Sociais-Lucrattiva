@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
 
     const results = [];
     for (const page of accountsData.data) {
-      const igRes = await fetch(`${GRAPH}/${page.id}?fields=instagram_business_account{id,username},connected_instagram_account&access_token=${encodeURIComponent(page.access_token)}`);
+      const igRes = await fetch(`${GRAPH}/${page.id}?fields=instagram_business_account{id,username}&access_token=${encodeURIComponent(page.access_token)}`);
       const igData = await igRes.json();
       results.push({
         page_id: page.id,
