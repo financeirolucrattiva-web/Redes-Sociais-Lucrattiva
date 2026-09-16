@@ -1,4 +1,5 @@
 const { getPost, savePost } = require("../../lib/store");
+const { checkAuth } = require("../../lib/auth");
 
 const GRAPH = "https://graph.facebook.com/v21.0";
 const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
@@ -36,6 +37,10 @@ async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     res.status(405).end();
+    return;
+  }
+  if (!checkAuth(req)) {
+    res.status(401).json({ error: "senha inválida" });
     return;
   }
   if (!PAGE_ACCESS_TOKEN || !IG_BUSINESS_ACCOUNT_ID) {
