@@ -9,17 +9,26 @@ async function graphPost(path, params) {
   const body = new URLSearchParams({ ...params, access_token: PAGE_ACCESS_TOKEN });
   const res = await fetch(url, { method: "POST", body });
   const data = await res.json();
-  if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+  if (data.error) {
+    const err = new Error(data.error.message || JSON.stringify(data.error));
+    err.code = data.error.code;
+    throw err;
+  }
   return data;
 }
 
-async function waitUntilReady(creationId) {
-  for (let i = 0; i < 8; i++) {
-    const res = await fetch(`${GRAPH}/${creationId}?fields=status_code&access_token=${encodeURIComponent(PAGE_ACCESS_TOKEN)}`);
-    const data = await res.json();
-    if (data.status_code === "FINISHED") return;
-    if (data.status_code === "ERROR") throw new Error("Falha ao processar mídia no Instagram");
-    await new Promise((r) => setTimeout(r, 1000));
+async function publishWithRetry(creationId) {
+  for (let i = 0; i < 4; i++) {
+    try {
+      return await graphPost(`${IG_BUSINESS_ACCOUNT_ID}/media_publish`, { creation_id: creationId });
+    } catch (err) {
+      // código 9007 = mídia ainda processando, tenta de novo em pouco tempo
+      if (err.code === 9007 && i < 3) {
+        await new Promise((r) => setTimeout(r, 1500));
+        continue;
+      }
+      throw err;
+    }
   }
 }
 
@@ -77,10 +86,7 @@ async function handler(req, res) {
       creationId = carousel.id;
     }
 
-    await waitUntilReady(creationId);
-    const published = await graphPost(`${IG_BUSINESS_ACCOUNT_ID}/media_publish`, {
-      creation_id: creationId,
-    });
+    const published = await publishWithRetry(creationId);
 
     post.status = "postado";
     post.instagramMediaId = published.id;
@@ -93,4 +99,4 @@ async function handler(req, res) {
 }
 
 module.exports = handler;
-module.exports.config = { maxDuration: 60 };
+module.exports.config = { maxDuration: 10 };
