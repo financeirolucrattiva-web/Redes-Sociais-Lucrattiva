@@ -651,7 +651,9 @@
       }
       const next = NEXT_STATUS[p.status];
       const nextLabel = NEXT_LABEL[p.status];
-      const actionBtn = next
+      const actionBtn = p.status === "aprovado"
+        ? `<button class="primary" data-action="publish" data-id="${p.id}">Postar agora</button>`
+        : next
         ? `<button class="primary" data-action="advance" data-id="${p.id}">${nextLabel}</button>`
         : `<button disabled>Publicado ✓</button>`;
       const downloadBtn = (p.status !== "pendente" && images.length)
@@ -703,6 +705,24 @@
     }
     if (btn.dataset.action === "download") {
       downloadPostImages(post);
+      return;
+    }
+    if (btn.dataset.action === "publish") {
+      btn.disabled = true;
+      btn.textContent = "Publicando…";
+      try {
+        const res = await fetch(`/api/posts/publish?id=${id}`, { method: "POST" });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "publish failed");
+        post.status = "postado";
+        posts.set(id, post);
+        render();
+        showToast("Publicado no Instagram!");
+      } catch (err) {
+        showToast("Falha ao publicar: " + (err.message || "tente de novo"));
+        btn.disabled = false;
+        btn.textContent = "Postar agora";
+      }
       return;
     }
     if (btn.dataset.action === "advance") {
