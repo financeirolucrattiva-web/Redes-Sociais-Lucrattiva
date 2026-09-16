@@ -1,9 +1,14 @@
 const { put } = require("@vercel/blob");
+const { checkAuth } = require("../lib/auth");
 
 async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     res.status(405).end();
+    return;
+  }
+  if (!checkAuth(req)) {
+    res.status(401).json({ error: "senha inválida" });
     return;
   }
   try {
