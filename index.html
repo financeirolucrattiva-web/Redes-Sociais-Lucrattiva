@@ -554,6 +554,30 @@
   const toastEl = $("#toast");
   const connEl = $("#connStatus");
 
+  function getPanelPassword() {
+    let pw = localStorage.getItem("panelPassword");
+    if (!pw) {
+      pw = window.prompt("Senha do painel (pra criar, aprovar, excluir ou postar):") || "";
+      if (pw) localStorage.setItem("panelPassword", pw);
+    }
+    return pw;
+  }
+
+  async function authFetch(url, options = {}) {
+    const pw = getPanelPassword();
+    const doFetch = (password) => fetch(url, {
+      ...options,
+      headers: { ...(options.headers || {}), "x-panel-password": password },
+    });
+    let res = await doFetch(pw);
+    if (res.status === 401) {
+      localStorage.removeItem("panelPassword");
+      const pw2 = getPanelPassword();
+      if (pw2) res = await doFetch(pw2);
+    }
+    return res;
+  }
+
   function showToast(msg) {
     toastEl.textContent = msg;
     toastEl.classList.add("show");
@@ -711,7 +735,7 @@
       btn.disabled = true;
       btn.textContent = "Publicando…";
       try {
-        const res = await fetch(`/api/posts/publish?id=${id}`, { method: "POST" });
+        const res = await authFetch(`/api/posts/publish?id=${id}`, { method: "POST" });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "publish failed");
         post.status = "postado";
@@ -730,7 +754,7 @@
       if (!next) return;
       btn.disabled = true;
       try {
-        const res = await fetch(`/api/posts/${id}`, {
+        const res = await authFetch(`/api/posts/${id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ status: next }),
@@ -747,7 +771,7 @@
     } else if (btn.dataset.action === "delete") {
       if (!confirm("Excluir este conteúdo do painel?")) return;
       try {
-        const res = await fetch(`/api/posts/${id}`, { method: "DELETE" });
+        const res = await authFetch(`/api/posts/${id}`, { method: "DELETE" });
         if (!res.ok) throw new Error("delete failed");
         posts.delete(id);
         render();
@@ -808,7 +832,7 @@
       const imageUrls = [];
       for (let i = 0; i < pendingImages.length; i++) {
         submitBtn.textContent = `Enviando imagem ${i + 1}/${pendingImages.length}…`;
-        const res = await fetch("/api/upload", {
+        const res = await authFetch("/api/upload", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ filename: `slide-${i + 1}.jpg`, dataUrl: pendingImages[i] }),
@@ -819,7 +843,7 @@
       }
 
       submitBtn.textContent = "Salvando…";
-      const res = await fetch("/api/posts", {
+      const res = await authFetch("/api/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
