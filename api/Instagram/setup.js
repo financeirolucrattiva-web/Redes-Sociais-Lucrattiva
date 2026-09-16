@@ -43,7 +43,29 @@ module.exports = async (req, res) => {
       });
     }
 
-    res.status(200).json({ pages: results });
+    // busca também pelos ativos de Instagram do negócio, caso o vínculo
+    // clássico (Página -> Instagram) não apareça acima
+    let businessInstagramAccounts = [];
+    try {
+      const bizRes = await fetch(`${GRAPH}/me/businesses?access_token=${encodeURIComponent(longToken)}`);
+      const bizData = await bizRes.json();
+      for (const biz of bizData.data || []) {
+        const igAccRes = await fetch(`${GRAPH}/${biz.id}/instagram_accounts?access_token=${encodeURIComponent(longToken)}`);
+        const igAccData = await igAccRes.json();
+        for (const acc of igAccData.data || []) {
+          businessInstagramAccounts.push({
+            business_id: biz.id,
+            business_name: biz.name,
+            instagram_account_id: acc.id,
+            username: acc.username,
+          });
+        }
+      }
+    } catch (e) {
+      businessInstagramAccounts = [{ error: String(e) }];
+    }
+
+    res.status(200).json({ pages: results, business_instagram_accounts: businessInstagramAccounts });
   } catch (err) {
     res.status(500).json({ error: String(err) });
   }
