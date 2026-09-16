@@ -1,4 +1,5 @@
 const { listPosts, savePost } = require("../../lib/store");
+const { checkAuth } = require("../../lib/auth");
 
 function newId() {
   return `post-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -16,6 +17,10 @@ module.exports = async (req, res) => {
   }
 
   if (req.method === "POST") {
+    if (!checkAuth(req)) {
+      res.status(401).json({ error: "senha inválida" });
+      return;
+    }
     try {
       const body = req.body || {};
       const post = {
