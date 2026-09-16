@@ -47,15 +47,20 @@ module.exports = async (req, res) => {
     // clássico (Página -> Instagram) não apareça acima
     let businessInstagramAccounts = [];
     try {
-      const bizRes = await fetch(`${GRAPH}/me/businesses?access_token=${encodeURIComponent(longToken)}`);
-      const bizData = await bizRes.json();
-      for (const biz of bizData.data || []) {
-        const igAccRes = await fetch(`${GRAPH}/${biz.id}/instagram_accounts?access_token=${encodeURIComponent(longToken)}`);
+      const businessIds = req.query.business_id
+        ? [req.query.business_id]
+        : (await (await fetch(`${GRAPH}/me/businesses?access_token=${encodeURIComponent(longToken)}`)).json()).data?.map((b) => b.id) || [];
+
+      for (const bizId of businessIds) {
+        const igAccRes = await fetch(`${GRAPH}/${bizId}/instagram_accounts?access_token=${encodeURIComponent(longToken)}`);
         const igAccData = await igAccRes.json();
+        if (igAccData.error) {
+          businessInstagramAccounts.push({ business_id: bizId, error: igAccData.error });
+          continue;
+        }
         for (const acc of igAccData.data || []) {
           businessInstagramAccounts.push({
-            business_id: biz.id,
-            business_name: biz.name,
+            business_id: bizId,
             instagram_account_id: acc.id,
             username: acc.username,
           });
