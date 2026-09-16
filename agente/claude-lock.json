@@ -16,8 +16,8 @@
     "./deployments/conteudo-diario-contabilidade-agricola.yml": {
       "kind": "deployment",
       "id": "depl_01K2KYhuTePHGW1X68hwJFtK",
-      "hash": "ae7de2bafb6dbd73dc93edbb784d08ab",
-      "remote_hash": "ae7de2bafb6dbd73dc93edbb784d08ab"
+      "hash": "71e2a8a44372c7151bc7fd15e1579b1a",
+      "remote_hash": "71e2a8a44372c7151bc7fd15e1579b1a"
     },
     "./environments/agente-redes-sociais-agro-env.yml": {
       "kind": "environment",
