@@ -1,4 +1,4 @@
-const { put } = require("@vercel/blob");
+const { uploadImage } = require("../lib/storage");
 const { checkAuth } = require("../lib/auth");
 
 async function handler(req, res) {
@@ -25,9 +25,8 @@ async function handler(req, res) {
     const [, contentType, base64] = match;
     const buffer = Buffer.from(base64, "base64");
     const safeName = filename.replace(/[^a-zA-Z0-9._-]/g, "-");
-    const pathname = `data/images/${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${safeName}`;
-    const blob = await put(pathname, buffer, { access: "public", contentType });
-    res.status(201).json({ url: blob.url });
+    const url = await uploadImage(buffer, safeName, contentType);
+    res.status(201).json({ url });
   } catch (err) {
     res.status(500).json({ error: "Falha no upload", detail: String(err) });
   }
