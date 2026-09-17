@@ -1,4 +1,4 @@
-const { put } = require("@vercel/blob");
+const { saveWeek } = require("../../lib/store");
 const { listDeploymentRuns, getSession, listAllEvents, extractWeeklyPlan, WEEKLY_DEPLOYMENT_ID } = require("../../lib/anthropic");
 
 function mondayOf(dateStr) {
@@ -39,13 +39,7 @@ module.exports = async (req, res) => {
         }
 
         const weekStart = mondayOf(rows[0].date);
-        const pathname = `data/week/${weekStart}.json`;
-        await put(pathname, JSON.stringify({ weekStart, days: rows, sourceSessionId: sessionId, syncedAt: new Date().toISOString() }), {
-          access: "public",
-          contentType: "application/json",
-          addRandomSuffix: false,
-          allowOverwrite: true,
-        });
+        await saveWeek({ weekStart, days: rows, sourceSessionId: sessionId });
         result.created.push({ run: run.id, weekStart, days: rows.length });
       } catch (err) {
         result.errors.push({ run: run.id, error: String(err) });

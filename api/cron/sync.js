@@ -1,12 +1,10 @@
-const { put } = require("@vercel/blob");
+const { uploadImage } = require("../../lib/storage");
 const { getPost, savePost } = require("../../lib/store");
 const { listDeploymentRuns, getSession, listAllEvents, extractContent } = require("../../lib/anthropic");
 
-async function uploadImage(base64, index) {
+async function uploadGeneratedImage(base64, index) {
   const buffer = Buffer.from(base64, "base64");
-  const pathname = `data/images/${Date.now()}-${index}-${Math.random().toString(36).slice(2, 8)}.png`;
-  const blob = await put(pathname, buffer, { access: "public", contentType: "image/png" });
-  return blob.url;
+  return uploadImage(buffer, `slide-${index}.png`, "image/png");
 }
 
 module.exports = async (req, res) => {
@@ -52,7 +50,7 @@ module.exports = async (req, res) => {
 
         const urls = [];
         for (let i = 0; i < parsed.imagesB64.length; i++) {
-          urls.push(await uploadImage(parsed.imagesB64[i], i + 1));
+          urls.push(await uploadGeneratedImage(parsed.imagesB64[i], i + 1));
         }
 
         const scheduledAt = run.trigger_context && run.trigger_context.scheduled_at;
