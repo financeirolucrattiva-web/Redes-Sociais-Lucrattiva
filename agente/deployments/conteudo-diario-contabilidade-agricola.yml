@@ -6,24 +6,8 @@ environment_id: ../environments/agente-redes-sociais-agro-env.yml
 initial_events:
   - type: user.message
     content:
-      - type: image
-        source:
-          type: base64
-          media_type: image/jpeg
-          data: "@../assets/logo-icone.jpg"
-      - type: image
-        source:
-          type: base64
-          media_type: image/png
-          data: "@../assets/logo-banner.png"
       - type: text
-        text: |
-          As duas imagens acima são a identidade visual OFICIAL da Lucrattiva (ícone/logo e
-          banner de exemplo). Use exatamente essas cores, formas, tipografia, proporções e
-          estilo — não recrie a marca com outra paleta ou formato. Toda peça (imagem/carrossel)
-          que você gerar deve parecer visualmente da mesma família dessas referências.
-
-          Entregue o conteúdo completo (imagem/carrossel, legenda e horário) para postar hoje.
+        text: Entregue o conteúdo completo (imagem/carrossel, legenda e horário) para postar hoje.
 schedule:
   type: cron
   expression: 0 7 * * *
