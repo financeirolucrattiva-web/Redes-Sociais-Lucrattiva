@@ -16,8 +16,8 @@
     "./deployments/conteudo-diario-contabilidade-agricola.yml": {
       "kind": "deployment",
       "id": "depl_01K2KYhuTePHGW1X68hwJFtK",
-      "hash": "8d7962c71c382a4495cac08ab35d8a44",
-      "remote_hash": "8d7962c71c382a4495cac08ab35d8a44"
+      "hash": "e2ac7d413a53f8a8f69a025407b16166",
+      "remote_hash": "e2ac7d413a53f8a8f69a025407b16166"
     },
     "./deployments/programacao-semanal-contabilidade-agricola.yml": {
       "kind": "deployment",
