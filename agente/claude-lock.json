@@ -16,14 +16,14 @@
     "./deployments/conteudo-diario-contabilidade-agricola.yml": {
       "kind": "deployment",
       "id": "depl_01K2KYhuTePHGW1X68hwJFtK",
-      "hash": "e2ac7d413a53f8a8f69a025407b16166",
-      "remote_hash": "e2ac7d413a53f8a8f69a025407b16166"
+      "hash": "c9e4a9123465e3548c5e62919ebc2660",
+      "remote_hash": "c9e4a9123465e3548c5e62919ebc2660"
     },
     "./deployments/programacao-semanal-contabilidade-agricola.yml": {
       "kind": "deployment",
       "id": "depl_01Qd3d62tTQ5gWWzR7PkSA9H",
-      "hash": "9ffa810f8d6980a9419819343e449ca8",
-      "remote_hash": "9ffa810f8d6980a9419819343e449ca8"
+      "hash": "fe2cf294f8b1143355063e528aac620c",
+      "remote_hash": "fe2cf294f8b1143355063e528aac620c"
     },
     "./environments/agente-redes-sociais-agro-env.yml": {
       "kind": "environment",

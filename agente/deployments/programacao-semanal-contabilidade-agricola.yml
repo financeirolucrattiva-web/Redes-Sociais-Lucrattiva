@@ -22,4 +22,4 @@ budget:
   type: limit
   max_list_cost:
     currency: USD
-    amount: "1"
+    amount: "500"
