@@ -1,5 +1,5 @@
 const { uploadImage } = require("../../lib/storage");
-const { getPost, savePost } = require("../../lib/store");
+const { hasSynced, markSynced, savePost } = require("../../lib/store");
 const { listDeploymentRuns, getSession, listAllEvents, extractContent } = require("../../lib/anthropic");
 
 async function uploadGeneratedImage(base64, index) {
@@ -28,9 +28,8 @@ module.exports = async (req, res) => {
       }
       const postId = `agent-${sessionId}`;
       try {
-        const existing = await getPost(postId);
-        if (existing) {
-          result.skipped.push({ run: run.id, reason: "já existe" });
+        if (await hasSynced(sessionId)) {
+          result.skipped.push({ run: run.id, reason: "já sincronizado antes" });
           continue;
         }
 
@@ -72,6 +71,7 @@ module.exports = async (req, res) => {
           sourceSessionId: sessionId,
         };
         await savePost(post);
+        await markSynced(sessionId);
         result.created.push({ run: run.id, postId, theme: parsed.theme, images: urls.length });
       } catch (err) {
         result.errors.push({ run: run.id, error: String(err) });
